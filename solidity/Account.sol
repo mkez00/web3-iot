@@ -9,8 +9,13 @@ contract Account is Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _deviceIds;
 
+    enum DeviceType{ SWITCH }
+
     struct Device {
+        DeviceType deviceType;
         string deviceName;
+        bool switchState;
+        bool enabled; //is the device enabled
     }
 
     mapping(uint256 => Device) Devices;
@@ -21,11 +26,15 @@ contract Account is Ownable {
         return Devices[_deviceId];
     }
 
-    function createDevice(string memory _deviceName) external onlyOwner returns (uint256) {
+    function switchDeviceState(uint256 _deviceId) external onlyOwner {
+        Devices[_deviceId].switchState = !Devices[_deviceId].switchState;
+    }
+
+    function createDevice(DeviceType _deviceType, string memory _deviceName) external onlyOwner returns (uint256) {
         _deviceIds.increment();
         uint256 deviceId = _deviceIds.current();
 
-        Devices[deviceId] = Device(_deviceName);
+        Devices[deviceId] = Device(_deviceType, _deviceName, true, true);
 
         return deviceId;
     }
