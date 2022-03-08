@@ -20,7 +20,9 @@ contract Account is Ownable {
 
     mapping(uint256 => Device) Devices;
 
-    constructor() {}
+    constructor(address _accountRegisterContractAddress) {
+        IAccountRegister(_accountRegisterContractAddress).linkContractFull(msg.sender, address(this));
+    }
 
     function getDevice(uint256 _deviceId) public view onlyOwner returns (Device memory){
         return Devices[_deviceId];
@@ -38,4 +40,8 @@ contract Account is Ownable {
 
         return deviceId;
     }
+}
+
+interface IAccountRegister {
+    function linkContractFull(address _owner, address _contractAddress) external;
 }
