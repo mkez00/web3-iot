@@ -14,35 +14,54 @@ import Switch from '@mui/material/Switch';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
+import FloatingFab from "./FloatingFab"
 
 import Web3 from 'web3'
 
 function createData(id, name, switchState, enabled) {
     return { id, name, switchState, enabled };
   }
-  
-//   const rows = [
-//     createData(1, 'Blah', true, true),
-//     createData(2, 'Blah', false, true),
-//     createData(3, 'Blah', true, false),
-//     createData(4, 'Blah', false, true),
-//     createData(5, 'Blah', false, false),
-//   ];
 
 function DeviceManagement(){
     const [account, setAccount] = useState();
     const [accountContractId, setAccountContractId] = useState();
     const [devices, setDevices] = useState();
     const [loadingData, setLoadingData] = useState(true);
+    const [web3Client, setWeb3Client] = useState();
+    const accountAbi = require('./account-abi.json')
+
+    const handleSwitchState = event => {
+        processSwitchState(event)
+    }
+
+    async function processSwitchState(event){
+        let accountContract = new web3Client.eth.Contract(accountAbi, accountContractId, { from: account })
+        var response = await accountContract.methods.switchDeviceState(event.target.id).send();
+        loadDataGrid(web3Client, accountContractId, account);
+    }
+
+    async function loadDataGrid(web3, accountContractId, account){
+        setLoadingData(true)
+        // account contract
+        let accountContract = new web3.eth.Contract(accountAbi, accountContractId, { from: account })
+        const deviceCount = await accountContract.methods.getCurrentDeviceId().call();
+        const rows = []
+        for (var x=1; x<=deviceCount; x++){
+            let device = await accountContract.methods.getDevice(x).call();
+            rows.push(createData(x, device.deviceName, device.switchState, device.enabled))
+        }
+        setDevices(rows)
+        setLoadingData(false)
+    }
 
     useEffect(() => {
         async function load() {
-          setLoadingData(true)
           const web3 = new Web3(window.ethereum);
+          setWeb3Client(web3)
+
           const accounts = await web3.eth.requestAccounts();
           setAccount(accounts[0]);
       
-          const accountAbi = require('./account-abi.json')
           const accountRegisterAbi = require('./accountregister-abi.json')
           const contractId = require('./accountregister-contractid.json')
 
@@ -50,19 +69,7 @@ function DeviceManagement(){
           let accountRegisterContract = new web3.eth.Contract(accountRegisterAbi, contractId.contractId, { from: account })
           const _accountContractId = await accountRegisterContract.methods.getContractId().call();
           setAccountContractId(_accountContractId)
-
-
-          // account contract
-          let accountContract = new web3.eth.Contract(accountAbi, _accountContractId, { from: account })
-          const deviceCount = await accountContract.methods.getCurrentDeviceId().call();
-
-          const rows = []
-          for (var x=1; x<=deviceCount; x++){
-              let device = await accountContract.methods.getDevice(x).call();
-              rows.push(createData(x, device.deviceName, device.switchState, device.enabled))
-          }
-          setDevices(rows)
-          setLoadingData(false)
+          loadDataGrid(web3, _accountContractId, accounts[0]);
         }
         
         load();
@@ -76,8 +83,7 @@ function DeviceManagement(){
 
     return (
         <Box>
-        <Typography variant="subtitle1">Account: {account}</Typography>
-        <Typography variant="subtitle1" >Contract ID: {accountContractId}</Typography>
+        <Typography variant="caption">Account: {account}</Typography> | <Typography variant="caption" >Contract ID: {accountContractId}</Typography>
         {loadingData ? (<div>Loading...</div>): (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} size="small" aria-label="IoT Devices">
@@ -101,11 +107,9 @@ function DeviceManagement(){
                     <TableCell component="th" scope="row">
                         {row.name}
                     </TableCell>
-                    
                     <TableCell align="right">
-                        <Switch checked={row.switchState}></Switch>
+                        <Switch id={String(row.id)} checked={row.switchState} onChange={handleSwitchState}></Switch>
                     </TableCell>
-                    
                     <TableCell align="right">
                         <Button size="small">Delete</Button>
                     </TableCell>
@@ -115,7 +119,10 @@ function DeviceManagement(){
             </Table>
             </TableContainer>
         )}
-            </Box>
+        
+                    
+            <FloatingFab></FloatingFab>
+        </Box>
     );
 }
 
