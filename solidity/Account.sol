@@ -21,7 +21,7 @@ contract Account is Ownable {
     mapping(uint256 => Device) Devices;
 
     constructor(address _accountRegisterContractAddress) {
-        IAccountRegister(_accountRegisterContractAddress).linkContractFull(msg.sender, address(this));
+        IAccountRegister(_accountRegisterContractAddress).linkContract(msg.sender, address(this));
     }
 
     function getDevice(uint256 _deviceId) public view onlyOwner returns (Device memory){
@@ -30,6 +30,14 @@ contract Account is Ownable {
 
     function switchDeviceState(uint256 _deviceId) external onlyOwner {
         Devices[_deviceId].switchState = !Devices[_deviceId].switchState;
+    }
+
+    function deleteDevice(uint256 _deviceId) external onlyOwner {
+        Devices[_deviceId].enabled = false;
+    }
+
+    function getCurrentDeviceId() public view onlyOwner returns (uint256){
+        return _deviceIds.current();
     }
 
     function createDevice(DeviceType _deviceType, string memory _deviceName) external onlyOwner returns (uint256) {
@@ -43,5 +51,5 @@ contract Account is Ownable {
 }
 
 interface IAccountRegister {
-    function linkContractFull(address _owner, address _contractAddress) external;
+    function linkContract(address _owner, address _contractAddress) external;
 }

@@ -8,11 +8,7 @@ contract AccountRegister {
 
     constructor() {}
 
-    function linkContract(address _contractAddress) external{
-        Registry[msg.sender] = _contractAddress;
-    }
-
-    function linkContractFull(address _owner, address _contractAddress) external{
+    function linkContract(address _owner, address _contractAddress) external{
         Registry[_owner] = _contractAddress;
     }
 
