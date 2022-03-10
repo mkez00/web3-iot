@@ -28,14 +28,16 @@ const style = {
   };
 
 function FloatingFab(props){
-    const [open, setOpen] = useState(false);
-    const handleClose = () => setOpen(false);
-    const handleOpen = event => {
-        console.log("handle open")
-        console.log(event)
-        setOpen(true);
-    }
+  const [newDevicename, setNewDeviceName] = useState("");
+  const [open, setOpen] = useState(false);
 
+  const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpen(true);
+    
+    const createNewDevice = () => {
+        let accountContract = new props.web3Client.eth.Contract(props.accountAbi, props.accountContractId, { from: props.account })
+        var response = accountContract.methods.createDevice(0,newDevicename).send();
+    }
 
     return (
       <Box>
@@ -51,9 +53,8 @@ function FloatingFab(props){
           <Box sx={modalStyle}>
             
             <Container>
-              <TextField fullWidth id="outlined-basic" label="Switch Name" variant="outlined" />
-              <Button variant="contained">Create Device</Button>
-
+              <TextField fullWidth id="outlined-basic" label="Switch Name" variant="outlined" onChange={(e) => setNewDeviceName(e.target.value)} />
+              <Button variant="contained" onClick={createNewDevice}>Create Device</Button>
             </Container>
             
           </Box>

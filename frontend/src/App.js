@@ -16,7 +16,6 @@ function App() {
           <DeviceManagement></DeviceManagement>
         </Box>
       </Container>
-      <FloatingFab></FloatingFab>
     </Box>
   );
 }
