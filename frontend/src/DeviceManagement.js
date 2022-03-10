@@ -119,9 +119,8 @@ function DeviceManagement(){
             </Table>
             </TableContainer>
         )}
-        
-                    
-            <FloatingFab></FloatingFab>
+
+            <FloatingFab web3Client={web3Client} account={account} accountContractId={accountContractId} accountAbi={accountAbi}></FloatingFab>
         </Box>
     );
 }
