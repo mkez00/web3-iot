@@ -15,6 +15,7 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
 import FloatingFab from "./FloatingFab"
+import BootstrapAccount from './BootstrapAccount';
 
 import Web3 from 'web3'
 
@@ -29,6 +30,7 @@ function DeviceManagement(){
     const [loadingData, setLoadingData] = useState(true);
     const [web3Client, setWeb3Client] = useState();
     const accountAbi = require('./account-abi.json')
+    const [bootstrapAccount, setBootstrapAccount] = useState(false);
 
     const handleSwitchState = event => {
         processSwitchState(event)
@@ -66,14 +68,26 @@ function DeviceManagement(){
           const contractId = require('./accountregister-contractid.json')
 
           // account register
-          let accountRegisterContract = new web3.eth.Contract(accountRegisterAbi, contractId.contractId, { from: account })
+          let accountRegisterContract = new web3.eth.Contract(accountRegisterAbi, contractId.contractId, { from: accounts[0] })
           const _accountContractId = await accountRegisterContract.methods.getContractId().call();
-          setAccountContractId(_accountContractId)
-          loadDataGrid(web3, _accountContractId, accounts[0]);
+          if (_accountContractId=="0x0000000000000000000000000000000000000000"){
+              setBootstrapAccount(true)
+          } else {
+            setBootstrapAccount(false)
+            setAccountContractId(_accountContractId)
+            loadDataGrid(web3, _accountContractId, accounts[0]);
+          }
+          
         }
         
         load();
       }, []);
+
+    if (bootstrapAccount){
+        return (
+            <BootstrapAccount web3Client={web3Client} account={account}></BootstrapAccount>
+        )
+    }
 
     if (devices!=undefined && devices.filter(row => row.enabled).length == 0){
         return (
