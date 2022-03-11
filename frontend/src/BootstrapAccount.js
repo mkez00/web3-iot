@@ -21,7 +21,7 @@ function BootstrapAccount(props){
         <Box>
           <Typography variant="h4">Welcome to IoT Manager</Typography><br/>
           <Typography variant="body1">
-            This application was developed to allow account holders to manage IoT devices (switches) using a web frontend that is blockchain enabled using the Ethereum Virtual Machine. Scripts for the devices can be found in the GitHub repository.
+            This application was developed to allow account holders to manage IoT devices (switches) using a web frontend that is blockchain enabled using the Ethereum Virtual Machine. Details regarding the application architecture as well as scripts for IoT devices can be found in the GitHub repository.
           </Typography><br/>
           <p className="center"><a target="_blank" href="https://github.com/mkez00/web3-iot" rel="noreferrer"><img src='./GitHub-Mark-32px.png' alt="GitHub"></img></a></p>
           <Typography variant="body1">
