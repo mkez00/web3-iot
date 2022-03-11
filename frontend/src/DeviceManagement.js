@@ -107,7 +107,7 @@ function DeviceManagement(){
     if (devices!=undefined && devices.filter(row => row.enabled).length == 0){
         return (
             <Box><Typography align="center">No devices, press + to start</Typography>
-            <FloatingFab web3Client={web3Client} account={account} accountContractId={accountContractId} accountAbi={accountAbi}></FloatingFab></Box>
+            <FloatingFab web3Client={web3Client} account={account} accountContractId={accountContractId} accountAbi={accountAbi} loadDataGrid={loadDataGrid}></FloatingFab></Box>
         )
     }
 
@@ -150,7 +150,7 @@ function DeviceManagement(){
             </TableContainer>
         )}
 
-            <FloatingFab web3Client={web3Client} account={account} accountContractId={accountContractId} accountAbi={accountAbi}></FloatingFab>
+            <FloatingFab web3Client={web3Client} account={account} accountContractId={accountContractId} accountAbi={accountAbi} loadDataGrid={loadDataGrid}></FloatingFab>
         </Box>
     );
 }

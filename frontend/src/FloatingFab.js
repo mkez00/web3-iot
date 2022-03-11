@@ -34,9 +34,11 @@ function FloatingFab(props){
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
     
-    const createNewDevice = () => {
+    async function createNewDevice(){
         let accountContract = new props.web3Client.eth.Contract(props.accountAbi, props.accountContractId, { from: props.account })
-        var response = accountContract.methods.createDevice(0,newDevicename).send();
+        var response = await accountContract.methods.createDevice(0,newDevicename).send();
+        handleClose()
+        props.loadDataGrid(props.web3Client, props.accountContractId, props.account)
     }
 
     return (
