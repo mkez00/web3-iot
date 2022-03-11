@@ -43,7 +43,7 @@ function FloatingFab(props){
 
     return (
       <Box>
-        <Fab onClick={handleOpen} style={style} size="medium" color="secondary" aria-label="add">
+        <Fab onClick={handleOpen} style={style} color="primary" aria-label="add">
           <AddIcon />
         </Fab>
         <Modal

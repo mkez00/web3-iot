@@ -61,13 +61,13 @@ function DeviceManagement(){
         const accountRegisterAbi = require('./accountregister-abi.json')
         // account register
         let accountRegisterContract = new web3.eth.Contract(accountRegisterAbi, contractId.contractId, { from: account })
-        const _accountContractId = await accountRegisterContract.methods.getContractId().call();
-        if (_accountContractId=="0x0000000000000000000000000000000000000000"){
+        const returnedAccountContractId = await accountRegisterContract.methods.getContractId().call();
+        if (returnedAccountContractId=="0x0000000000000000000000000000000000000000"){
             setBootstrapAccount(true)
         } else {
-          setBootstrapAccount(false)
-          setAccountContractId(_accountContractId)
-          loadDataGrid(web3, _accountContractId, account);
+            setBootstrapAccount(false)
+            setAccountContractId(returnedAccountContractId)
+            loadDataGrid(web3, returnedAccountContractId, account);
         }
     }
 
@@ -75,24 +75,9 @@ function DeviceManagement(){
         async function load() {
           const web3 = new Web3(window.ethereum);
           setWeb3Client(web3)
-
           const accounts = await web3.eth.requestAccounts();
           setAccount(accounts[0]);
-      
-          
-
           registerAcount(web3, accounts[0])
-          // account register
-        //   let accountRegisterContract = new web3.eth.Contract(accountRegisterAbi, contractId.contractId, { from: accounts[0] })
-        //   const _accountContractId = await accountRegisterContract.methods.getContractId().call();
-        //   if (_accountContractId=="0x0000000000000000000000000000000000000000"){
-        //       setBootstrapAccount(true)
-        //   } else {
-        //     setBootstrapAccount(false)
-        //     setAccountContractId(_accountContractId)
-        //     loadDataGrid(web3, _accountContractId, accounts[0]);
-        //   }
-          
         }
         
         load();
@@ -106,8 +91,10 @@ function DeviceManagement(){
 
     if (devices!=undefined && devices.filter(row => row.enabled).length == 0){
         return (
-            <Box><Typography align="center">No devices, press + to start</Typography>
-            <FloatingFab web3Client={web3Client} account={account} accountContractId={accountContractId} accountAbi={accountAbi} loadDataGrid={loadDataGrid}></FloatingFab></Box>
+            <Box>
+                <Typography align="center">No devices, press + to start</Typography>
+                <FloatingFab web3Client={web3Client} account={account} accountContractId={accountContractId} accountAbi={accountAbi} loadDataGrid={loadDataGrid}></FloatingFab>
+            </Box>
         )
     }
 
