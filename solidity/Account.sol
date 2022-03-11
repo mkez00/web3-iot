@@ -24,7 +24,7 @@ contract Account is Ownable {
         IAccountRegister(_accountRegisterContractAddress).linkContract(msg.sender, address(this));
     }
 
-    function getDevice(uint256 _deviceId) public view onlyOwner returns (Device memory){
+    function getDevice(uint256 _deviceId) public view returns (Device memory){
         return Devices[_deviceId];
     }
 
@@ -43,9 +43,7 @@ contract Account is Ownable {
     function createDevice(DeviceType _deviceType, string memory _deviceName) external onlyOwner returns (uint256) {
         _deviceIds.increment();
         uint256 deviceId = _deviceIds.current();
-
         Devices[deviceId] = Device(_deviceType, _deviceName, true, true);
-
         return deviceId;
     }
 }
