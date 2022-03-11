@@ -25,7 +25,7 @@ function BootstrapAccount(props){
           </Typography><br/>
           <p className="center"><a target="_blank" href="https://github.com/mkez00/web3-iot" rel="noreferrer"><img src='./GitHub-Mark-32px.png' alt="GitHub"></img></a></p>
           <Typography variant="body1">
-            Since this application uses an EVM backend, you will need to run it from an Ethereum based wallet such as <a href="https://metamask.io/" target="_blank">Metamask</a>.  The account register (<b>{props.accountRegisterContractId}</b>) that is associated with this service is currently available on <b>Polygon-Mainnet</b>
+            Since this application uses an EVM backend, you will need to run it from an Ethereum supported wallet such as <a href="https://metamask.io/" target="_blank">Metamask</a>.  The account register (<b>{props.accountRegisterContractId}</b>) that is associated with this service is currently available on <b>Polygon-Mainnet</b>
           </Typography><br/>
           <Button variant="contained" onClick={processNewAccount}>Create Account Now</Button>
         </Box>
