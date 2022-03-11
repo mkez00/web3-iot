@@ -30,6 +30,7 @@ function DeviceManagement(){
     const [loadingData, setLoadingData] = useState(true);
     const [web3Client, setWeb3Client] = useState();
     const accountAbi = require('./account-abi.json')
+    const contractId = require('./accountregister-contractid.json')
     const [bootstrapAccount, setBootstrapAccount] = useState(false);
 
     const handleSwitchState = event => {
@@ -56,6 +57,20 @@ function DeviceManagement(){
         setLoadingData(false)
     }
 
+    async function registerAcount(web3, account){
+        const accountRegisterAbi = require('./accountregister-abi.json')
+        // account register
+        let accountRegisterContract = new web3.eth.Contract(accountRegisterAbi, contractId.contractId, { from: account })
+        const _accountContractId = await accountRegisterContract.methods.getContractId().call();
+        if (_accountContractId=="0x0000000000000000000000000000000000000000"){
+            setBootstrapAccount(true)
+        } else {
+          setBootstrapAccount(false)
+          setAccountContractId(_accountContractId)
+          loadDataGrid(web3, _accountContractId, account);
+        }
+    }
+
     useEffect(() => {
         async function load() {
           const web3 = new Web3(window.ethereum);
@@ -64,19 +79,19 @@ function DeviceManagement(){
           const accounts = await web3.eth.requestAccounts();
           setAccount(accounts[0]);
       
-          const accountRegisterAbi = require('./accountregister-abi.json')
-          const contractId = require('./accountregister-contractid.json')
+          
 
+          registerAcount(web3, accounts[0])
           // account register
-          let accountRegisterContract = new web3.eth.Contract(accountRegisterAbi, contractId.contractId, { from: accounts[0] })
-          const _accountContractId = await accountRegisterContract.methods.getContractId().call();
-          if (_accountContractId=="0x0000000000000000000000000000000000000000"){
-              setBootstrapAccount(true)
-          } else {
-            setBootstrapAccount(false)
-            setAccountContractId(_accountContractId)
-            loadDataGrid(web3, _accountContractId, accounts[0]);
-          }
+        //   let accountRegisterContract = new web3.eth.Contract(accountRegisterAbi, contractId.contractId, { from: accounts[0] })
+        //   const _accountContractId = await accountRegisterContract.methods.getContractId().call();
+        //   if (_accountContractId=="0x0000000000000000000000000000000000000000"){
+        //       setBootstrapAccount(true)
+        //   } else {
+        //     setBootstrapAccount(false)
+        //     setAccountContractId(_accountContractId)
+        //     loadDataGrid(web3, _accountContractId, accounts[0]);
+        //   }
           
         }
         
@@ -85,13 +100,14 @@ function DeviceManagement(){
 
     if (bootstrapAccount){
         return (
-            <BootstrapAccount web3Client={web3Client} account={account}></BootstrapAccount>
+            <BootstrapAccount web3Client={web3Client} account={account} accountAbi={accountAbi} accountRegisterContractId={contractId.contractId} registerAcount={registerAcount}></BootstrapAccount>
         )
     }
 
     if (devices!=undefined && devices.filter(row => row.enabled).length == 0){
         return (
-            <Typography align="center">No devices, press + to start</Typography>
+            <Box><Typography align="center">No devices, press + to start</Typography>
+            <FloatingFab web3Client={web3Client} account={account} accountContractId={accountContractId} accountAbi={accountAbi}></FloatingFab></Box>
         )
     }
 
