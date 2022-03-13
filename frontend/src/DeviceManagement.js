@@ -37,9 +37,19 @@ function DeviceManagement(){
         processSwitchState(event)
     }
 
+    const handleDeleteSwitch = event => {
+        processDeleteSwitch(event)
+    }
+
     async function processSwitchState(event){
         let accountContract = new web3Client.eth.Contract(accountAbi, accountContractId, { from: account })
         var response = await accountContract.methods.switchDeviceState(event.target.id).send();
+        loadDataGrid(web3Client, accountContractId, account);
+    }
+
+    async function processDeleteSwitch(event){
+        let accountContract = new web3Client.eth.Contract(accountAbi, accountContractId, { from: account })
+        var response = await accountContract.methods.deleteDevice(event.target.id).send();
         loadDataGrid(web3Client, accountContractId, account);
     }
 
@@ -128,7 +138,7 @@ function DeviceManagement(){
                         <Switch id={String(row.id)} checked={row.switchState} onChange={handleSwitchState}></Switch>
                     </TableCell>
                     <TableCell align="right">
-                        <Button size="small">Delete</Button>
+                        <Button id={String(row.id)} onClick={handleDeleteSwitch} size="small">Delete</Button>
                     </TableCell>
                     </TableRow>
                 ))}

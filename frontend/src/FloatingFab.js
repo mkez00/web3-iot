@@ -55,7 +55,8 @@ function FloatingFab(props){
           <Box sx={modalStyle}>
             
             <Container>
-              <TextField fullWidth id="outlined-basic" label="Switch Name" variant="outlined" onChange={(e) => setNewDeviceName(e.target.value)} />
+              <Typography sx={{ mb: 2 }}>Enter the name of the switch to add to the account</Typography>
+              <TextField sx={{ mb: 2 }} fullWidth id="outlined-basic" label="Switch Name" variant="outlined" onChange={(e) => setNewDeviceName(e.target.value)} />
               <Button variant="contained" onClick={createNewDevice}>Create Device</Button>
             </Container>
             
