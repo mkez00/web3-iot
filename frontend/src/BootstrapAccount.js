@@ -27,7 +27,7 @@ function BootstrapAccount(props){
           <Typography variant="body1">
             Since this application uses an EVM backend, you will need to run it from an Ethereum supported wallet such as <a href="https://metamask.io/" target="_blank">Metamask</a>.  The account register (<b>{props.accountRegisterContractId}</b>) that is associated with this service is currently available on <b>Polygon-Mainnet</b>
           </Typography><br/>
-          <Button variant="contained" onClick={processNewAccount}>Create Account Now</Button>
+          {props.providerAvailable ? <Button variant="contained" onClick={processNewAccount}>Create Account Now</Button> : <div></div>}
         </Box>
     );
 }

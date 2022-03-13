@@ -32,6 +32,7 @@ function DeviceManagement(){
     const accountAbi = require('./account-abi.json')
     const contractId = require('./accountregister-contractid.json')
     const [bootstrapAccount, setBootstrapAccount] = useState(false);
+    const [providerAvailable, setProviderAvailable] = useState(false)
 
     const handleSwitchState = event => {
         processSwitchState(event)
@@ -85,9 +86,16 @@ function DeviceManagement(){
         async function load() {
           const web3 = new Web3(window.ethereum);
           setWeb3Client(web3)
-          const accounts = await web3.eth.requestAccounts();
-          setAccount(accounts[0]);
-          registerAcount(web3, accounts[0])
+          web3.eth.requestAccounts()
+          .then(accounts => {
+            setProviderAvailable(true)
+            setAccount(accounts[0])
+            registerAcount(web3, accounts[0])
+          })
+          .catch(() => {
+            setProviderAvailable(false)
+            setBootstrapAccount(true)
+            });
         }
         
         load();
@@ -95,7 +103,7 @@ function DeviceManagement(){
 
     if (bootstrapAccount){
         return (
-            <BootstrapAccount web3Client={web3Client} account={account} accountAbi={accountAbi} accountRegisterContractId={contractId.contractId} registerAcount={registerAcount}></BootstrapAccount>
+            <BootstrapAccount providerAvailable={providerAvailable} web3Client={web3Client} account={account} accountAbi={accountAbi} accountRegisterContractId={contractId.contractId} registerAcount={registerAcount}></BootstrapAccount>
         )
     }
 
