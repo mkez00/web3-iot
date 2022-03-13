@@ -1,0 +1,17 @@
+[Default]
+web3_provider = https://polygon-rpc.com/
+account_contract_id = _ACCOUNT_CONTRACT_ID_
+device_id = 1
+audio_file = alarm.wav
+
+[Test]
+web3_provider = http://192.168.0.115:7545
+account_contract_id = 0xDe1416E31cFd633E0248E63A812D4C897c632b2d
+device_id = 1
+audio_file = alarm.wav
+
+[Production]
+web3_provider = https://polygon-rpc.com/
+account_contract_id = 0xDe1416E31cFd633E0248E63A812D4C897c632b2d
+device_id = 1
+audio_file = alarm.wav

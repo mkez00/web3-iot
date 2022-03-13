@@ -1,25 +1,29 @@
 from web3 import Web3
 import asyncio
+import configparser
+import sys
 from datetime import datetime
 from playsound import playsound
 
-async def check_status(contract, device_id):
+async def check_status(contract, device_id, file_to_play):
     last_result = False
     while True:
-        device = contract.functions.getDevice(device_id).call()	
+        device = contract.functions.getDevice(int(device_id)).call()	
         switch_state = bool(device[2])
         if last_result != switch_state:
-            process_status_change(device[1], switch_state)
+            process_status_change(device[1], switch_state, file_to_play)
             last_result = switch_state
             
         await asyncio.sleep(2)
 
-def process_status_change(switch_name, is_switch_on):
+def process_status_change(switch_name, is_switch_on, file_to_play):
     print(str(datetime.now()) + " processing status for " + switch_name + " changed to " + str(is_switch_on))
     if is_switch_on:
-        playsound("alarm.wav")
+        playsound(file_to_play)
 
 def main():
+    config = configparser.RawConfigParser()
+    config.read('config.txt')
     abi = [
 	{
 		"inputs": [
@@ -189,17 +193,20 @@ def main():
 		"type": "function"
 	}
 ]
-    address = "0xDe1416E31cFd633E0248E63A812D4C897c632b2d"
-    device_id = 1
+    config_section = 'Default'
+    if len(sys.argv)>=2:
+        config_section = sys.argv[1]
+    address = config.get(config_section,'account_contract_id')
+    device_id = config.get(config_section,'device_id')
+    file_to_play = config.get(config_section,'audio_file')
 
-    w3 = Web3(Web3.HTTPProvider('http://192.168.0.115:7545'))
-    # w3 = Web3(Web3.HTTPProvider('https://polygon-rpc.com/'))
+    w3 = Web3(Web3.HTTPProvider(config.get(config_section,'web3_provider')))
     print(w3.isConnected())
     contract = w3.eth.contract(address=address, abi=abi)
 
     loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(asyncio.gather(check_status(contract, device_id)))
+        loop.run_until_complete(asyncio.gather(check_status(contract, device_id, file_to_play)))
     finally:
         loop.close()
 
