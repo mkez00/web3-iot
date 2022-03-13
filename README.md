@@ -6,7 +6,7 @@ IoT Manager is a a multi-tenant blockchain (EVM) enabled application that has a 
 
 ![Project Architecture](/iot-manager-architecture.png)
 
-The application backend is powered by solidity smart contracts.  When a new account connects to the frontend, the initialized smart contract is stored in an account register maintained by the site creator (me).  This allows for the user to connect to their web3 enabled browser and return to IoT Manager without having to create a new account each time.
+The application backend is powered by solidity smart contracts.  When a new account connects to the frontend, the initialized smart contract is stored in an account register.  Caching the user's account in the register allows for the user to connect to their web3 enabled browser and return to IoT Manager without having to create a new account each time.
 
 # Why Blockchain?
 
