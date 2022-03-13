@@ -24,7 +24,25 @@ def process_status_change(switch_name, is_switch_on, file_to_play):
 def main():
     config = configparser.RawConfigParser()
     config.read('config.txt')
-    abi = [
+    config_section = 'Default'
+    if len(sys.argv)>=2:
+        config_section = sys.argv[1]
+    address = config.get(config_section,'account_contract_id')
+    device_id = config.get(config_section,'device_id')
+    file_to_play = config.get(config_section,'audio_file')
+
+    w3 = Web3(Web3.HTTPProvider(config.get(config_section,'web3_provider')))
+    print(w3.isConnected())
+    contract = w3.eth.contract(address=address, abi=fetch_abi())
+
+    loop = asyncio.get_event_loop()
+    try:
+        loop.run_until_complete(asyncio.gather(check_status(contract, device_id, file_to_play)))
+    finally:
+        loop.close()
+
+def fetch_abi():
+    abi = abi = [
 	{
 		"inputs": [
 			{
@@ -192,23 +210,8 @@ def main():
 		"stateMutability": "nonpayable",
 		"type": "function"
 	}
-]
-    config_section = 'Default'
-    if len(sys.argv)>=2:
-        config_section = sys.argv[1]
-    address = config.get(config_section,'account_contract_id')
-    device_id = config.get(config_section,'device_id')
-    file_to_play = config.get(config_section,'audio_file')
-
-    w3 = Web3(Web3.HTTPProvider(config.get(config_section,'web3_provider')))
-    print(w3.isConnected())
-    contract = w3.eth.contract(address=address, abi=abi)
-
-    loop = asyncio.get_event_loop()
-    try:
-        loop.run_until_complete(asyncio.gather(check_status(contract, device_id, file_to_play)))
-    finally:
-        loop.close()
+    ]
+    return abi
 
 if __name__ == "__main__":
     main()
