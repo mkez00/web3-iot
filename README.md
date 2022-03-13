@@ -1,6 +1,6 @@
 # Overview
 
-IoT Manager is a a multi-tenant blockchain (EVM) enabled application that has a web3 front end designed to manage the state of IoT devices (currently only switches).  The state of the devices is to be maintained via smart contracts on a Ethereum based blockchain.  The "production" version of this application found here (link) uses the Polygon Mainnet to manage accounts.
+IoT Manager is a a multi-tenant blockchain (EVM) enabled application that has a web3 front end designed to manage the state of IoT devices (currently only switches).  The state of the devices is to be maintained via smart contracts on a Ethereum based blockchain.  The "production" version of this application found here at ![IoT Blockchain App](https://iotblockchainapp.com) uses the Polygon Mainnet to manage accounts.
 
 # Product Architecture
 
